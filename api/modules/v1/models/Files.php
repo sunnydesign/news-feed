@@ -16,7 +16,7 @@ class Files
         return realpath($this->dir) . '/*';
     }
 
-    private function getFilesList($limit = 1000, $offset = 2000): \LimitIterator
+    private function getFilesList($limit = 1000, $offset = 0): \LimitIterator
     {
         $iterator = new \GlobIterator($this->getMaskForScan());
 
