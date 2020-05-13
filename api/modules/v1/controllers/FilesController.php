@@ -2,6 +2,7 @@
 
 namespace api\modules\v1\controllers;
 
+use api\modules\v1\models\Country;
 use api\modules\v1\models\Files;
 use yii\rest\Controller;
 use yii\web\Response;
@@ -34,6 +35,7 @@ class FilesController extends Controller
 
     public function actionIndex()
     {
+        return Country::find()->one();
         return (new Files(\Yii::$app->params['upload']))->getAll();
         //return $this->getFilesList();
     }

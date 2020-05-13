@@ -1,7 +1,7 @@
 <?php
 
 $db = require __DIR__ . '/db.php';
-$params = require(__DIR__ . '/params.php');
+$params = require __DIR__ . '/params.php';
 
 return [
     'id' => 'file-system-api',

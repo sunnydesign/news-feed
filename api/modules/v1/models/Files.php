@@ -26,6 +26,7 @@ class Files
     private function prepareFilesList(): array
     {
         $start = microtime(true);
+        $files = [];
 
         foreach($this->getFilesList() as $entry) {
             $files[] = [
@@ -39,13 +40,14 @@ class Files
         return array_merge(['t' => microtime(true) - $start], $files);
     }
 
-    public function getAll()
+    public function getAll(): array
     {
         return $this->prepareFilesList();
     }
 
-    public function getOne($id)
+    public function getOne($id): ?array
     {
         return $this->prepareFilesList()[$id] ?? null;
     }
+
 }
