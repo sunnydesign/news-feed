@@ -11,17 +11,23 @@ class Files
         $this->dir = $dir;
     }
 
-    private function getMaskForScan()
+    private function getMaskForScan(): string
     {
         return realpath($this->dir) . '/*';
     }
 
-    private function getFilesList()
+    private function getFilesList($limit = 1000, $offset = 2000): \LimitIterator
     {
-        $files = [];
         $iterator = new \GlobIterator($this->getMaskForScan());
 
-        foreach($iterator as $entry) {
+        return new \LimitIterator($iterator, $offset, $limit);
+    }
+
+    private function prepareFilesList(): array
+    {
+        $start = microtime(true);
+
+        foreach($this->getFilesList() as $entry) {
             $files[] = [
                 'inode' => $entry->getInode(),
                 'name' => $entry->getFilename(),
@@ -30,16 +36,16 @@ class Files
             ];
         }
 
-        return $files;
+        return array_merge(['t' => microtime(true) - $start], $files);
     }
 
     public function getAll()
     {
-        return $this->getFilesList();
+        return $this->prepareFilesList();
     }
 
     public function getOne($id)
     {
-        return $this->getFilesList()[$id] ?? null;
+        return $this->prepareFilesList()[$id] ?? null;
     }
 }
