@@ -16,7 +16,7 @@ return [
 	'aliases' => [
         '@api' => dirname(dirname(__DIR__)) . '/api',
     ],
-    'components' => [        
+    'components' => [
         'user' => [
             'identityClass' => 'common\models\User',
             'enableAutoLogin' => false,
@@ -52,7 +52,7 @@ return [
                         '{id}' => '<id:\\w+>'
                     ]
                 ]
-            ],        
+            ],
         ],
         /*
         'request' => [
