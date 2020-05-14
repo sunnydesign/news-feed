@@ -2,12 +2,13 @@
 
 namespace api\modules\v1\controllers;
 
-use api\modules\v1\models\Country;
+use api\modules\v1\helpers\Pagination;
 use api\modules\v1\models\Files;
 use yii\rest\Controller;
 use yii\web\Response;
 use Yii;
 use yii\web\HttpException;
+use yii\web\UploadedFile;
 
 /**
  * Files Controller API
@@ -35,22 +36,22 @@ class FilesController extends Controller
 
     public function actionIndex()
     {
-        return Country::find()->one();
-        return (new Files(\Yii::$app->params['upload']))->getAll();
-        //return $this->getFilesList();
+        $pagination = new Pagination(Yii::$app->request->get('page'));
+
+        return (new Files(\Yii::$app->params['upload'], $pagination))->getAll();
     }
 
     public function actionView($id)
     {
-        $fileInfo = (new Files(\Yii::$app->params['upload']))->getOne($id);
+        $page = (int) ($id / Pagination::LIMIT) + 1;
+        $pagination = new Pagination($page);
+        $fileInfo = (new Files(\Yii::$app->params['upload'], $pagination))->getOne($id);
 
         if(!$fileInfo) {
             throw new HttpException(404, 'File not found');
         }
 
         Yii::$app->response->format = Response::FORMAT_RAW;
-
-        $f = file_get_contents($fileInfo['realpath']);
 
         return Yii::$app->response->sendFile(
             $fileInfo['realpath'], null, ['mimeType' => 'application/octet-stream']
@@ -59,7 +60,22 @@ class FilesController extends Controller
 
     public function actionCreate()
     {
-        return ['upload_dir' => Yii::$app->params['upload']];
+        $putdata = fopen("php://input", "r");
+/*
+        $path = \yii::getAlias('@webroot')."/upload/myputfile.ext";
+
+        $fp = fopen($path, "w");
+
+        while ($data = fread($putdata, 1024))
+            fwrite($fp, $data);
+
+        fclose($fp);
+        fclose($putdata);
+        */
+        //$body = Yii::$app->request->getBodyParams();
+        //$file = UploadedFile::getInstanceByName('photo');
+        var_dump($putdata); die;
+        return ['upload_dir' => Yii::$app->params['upload'], 'file' => $file];
     }
 
     public function actionUpdate()

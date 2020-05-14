@@ -2,13 +2,19 @@
 
 namespace api\modules\v1\models;
 
+use api\modules\v1\helpers\Pagination;
+use Yii;
+
 class Files
 {
-    private $dir;
+    private string $dir;
 
-    public function __construct($dir)
+    private Pagination $pagination;
+
+    public function __construct(string $dir, Pagination $pagination)
     {
         $this->dir = $dir;
+        $this->pagination = $pagination;
     }
 
     private function getMaskForScan(): string
@@ -16,28 +22,35 @@ class Files
         return realpath($this->dir) . '/*';
     }
 
-    private function getFilesList($limit = 1000, $offset = 0): \LimitIterator
+    private function getFilesList(): \LimitIterator
     {
         $iterator = new \GlobIterator($this->getMaskForScan());
 
-        return new \LimitIterator($iterator, $offset, $limit);
+        return new \LimitIterator($iterator, $this->pagination->getOffset(), $this->pagination::LIMIT);
     }
 
     private function prepareFilesList(): array
     {
-        $start = microtime(true);
         $files = [];
+        $iterator = $this->getFilesList();
 
-        foreach($this->getFilesList() as $entry) {
+        foreach($iterator as $entry) {
             $files[] = [
+                'id' => $this->getId($iterator->getPosition()),
                 'inode' => $entry->getInode(),
                 'name' => $entry->getFilename(),
                 'size' => $entry->getSize(),
                 'realpath' => $entry->getRealPath(),
+                'link' => Yii::$app->request->pathInfo . DIRECTORY_SEPARATOR . $this->getId($iterator->getPosition())
             ];
         }
 
-        return array_merge(['t' => microtime(true) - $start], $files);
+        return $files;
+    }
+
+    public function getId(int $iteratorPosition): int
+    {
+        return ($this->pagination->getPage() - 1) * $this->pagination::LIMIT + $iteratorPosition;
     }
 
     public function getAll(): array
@@ -45,9 +58,11 @@ class Files
         return $this->prepareFilesList();
     }
 
-    public function getOne($id): ?array
+    public function getOne(int $id): ?array
     {
-        return $this->prepareFilesList()[$id] ?? null;
+        $index = $id % $this->pagination::LIMIT;
+
+        return $this->prepareFilesList()[$index] ?? null;
     }
 
 }
