@@ -60,22 +60,34 @@ class FilesController extends Controller
 
     public function actionCreate()
     {
-        $putdata = fopen("php://input", "r");
-/*
-        $path = \yii::getAlias('@webroot')."/upload/myputfile.ext";
+        $storage = new \Upload\Storage\FileSystem(\Yii::$app->params['upload']);
+        $file = new \Upload\File('0', $storage);
 
-        $fp = fopen($path, "w");
+        $file->addValidations(array(
+            new \Upload\Validation\Size(\Yii::$app->params['sizeLimit'])
+        ));
 
-        while ($data = fread($putdata, 1024))
-            fwrite($fp, $data);
+        // Access data about the file that has been uploaded
+        $data = array(
+            'name'       => $file->getNameWithExtension(),
+            'extension'  => $file->getExtension(),
+            'mime'       => $file->getMimetype(),
+            'size'       => $file->getSize(),
+            'realpath'   => $file->getRealPath(),
+        );
 
-        fclose($fp);
-        fclose($putdata);
+        try {
+            $file->upload();
+        } catch (\Exception $e) {
+            $errors = $file->getErrors();
+        }
+
+        /*
+        if(isset($_FILES) && isset($_FILES[0])) {
+            $file = $_FILES[0];
+        }
         */
-        //$body = Yii::$app->request->getBodyParams();
-        //$file = UploadedFile::getInstanceByName('photo');
-        var_dump($putdata); die;
-        return ['upload_dir' => Yii::$app->params['upload'], 'file' => $file];
+        return ['upload_dir' => Yii::$app->params['upload'], 'file' => $data];
     }
 
     public function actionUpdate()
