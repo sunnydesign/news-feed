@@ -1,10 +1,9 @@
 <?php
 
-$params = require __DIR__ . '/params.php';
-$db = require __DIR__ . '/db.php';
+$db = require __DIR__ . '/../api/config/db.php';
 
-$config = [
-    'id' => 'basic-console',
+return [
+    'id' => 'file-system-api',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'controllerNamespace' => 'app\commands',
@@ -21,8 +20,5 @@ $config = [
             ],
         ],
         'db' => $db,
-    ],
-    'params' => $params,
+    ]
 ];
-
-return $config;

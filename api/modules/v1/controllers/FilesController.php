@@ -3,6 +3,7 @@
 namespace api\modules\v1\controllers;
 
 use api\modules\v1\helpers\Pagination;
+use api\modules\v1\models\Country;
 use api\modules\v1\models\Files;
 use yii\rest\Controller;
 use yii\web\Response;
@@ -36,6 +37,8 @@ class FilesController extends Controller
 
     public function actionIndex()
     {
+        $f = Files::find()->all();
+        return $f;
         $pagination = new Pagination(Yii::$app->request->get('page'));
 
         return (new Files(\Yii::$app->params['upload'], $pagination))->getAll();
@@ -43,6 +46,9 @@ class FilesController extends Controller
 
     public function actionView($id)
     {
+        $f = Files::findOne($id);
+        return $f;
+
         $page = (int) ($id / Pagination::LIMIT) + 1;
         $pagination = new Pagination($page);
         $fileInfo = (new Files(\Yii::$app->params['upload'], $pagination))->getOne($id);

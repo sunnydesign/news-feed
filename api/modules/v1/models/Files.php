@@ -2,11 +2,39 @@
 
 namespace api\modules\v1\models;
 
-use api\modules\v1\helpers\Pagination;
-use Yii;
+use yii\behaviors\TimestampBehavior;
+use \yii\db\ActiveRecord;
+use yii\db\Expression;
 
-class Files
+class Files extends ActiveRecord
 {
+    public function rules()
+    {
+        return [
+            [['uuid', 'name', 'path', 'metadata'], 'required'],
+            /*
+            [['order', 'visible', 'pickup'], 'integer'],
+            [['coord_lon', 'coord_lat'], 'number'],
+            [['title', 'address_short'], 'string', 'max' => 255],
+            [['address_long'], 'string', 'max' => 500]
+            */
+        ];
+    }
+
+    public function behaviors()
+    {
+        return [
+            [
+                'class'      => TimestampBehavior::className(),
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
+                'value'      => new Expression('NOW()'),
+            ],
+        ];
+    }
+    /*
     private string $dir;
 
     private Pagination $pagination;
@@ -64,5 +92,5 @@ class Files
 
         return $this->prepareFilesList()[$index] ?? null;
     }
-
+    */
 }

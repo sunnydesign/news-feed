@@ -1,14 +1,32 @@
 version: '3'
 services:
-  file-system-http-api:
+  app:
     build: .
-    image: file-system-http-api:${VERSION-latest}
-    container_name: file-system-http-api
-    network_mode: bridge
-    restart: always
+    container_name: xsolla-app
+    networks:
+      - default
+    depends_on:
+      - db
     ports:
       - 9080:80
     volumes:
       - ./:/var/www/api.xsolla.com/
     env_file:
       - .env
+
+  db:
+    image: mysql:5.5
+    container_name: xsolla-db
+    networks:
+      - default
+    ports:
+      - 3336:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: xsolla
+    volumes:
+      - ./database:/var/lib/mysql
+
+networks:
+  xsolla:
+    driver: bridge
