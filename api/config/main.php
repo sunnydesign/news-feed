@@ -34,11 +34,11 @@ return [
             'enablePrettyUrl' => true,
             'enableStrictParsing' => true,
             'showScriptName' => false,
-            //http://yii-api.loc/api/v1/countries
+            //http://yii-api.loc/api/v1/articles
             'rules' => [
                 [
                     'class' => \yii\rest\UrlRule::class,
-                    'controller' => ['v1/country'],
+                    'controller' => ['v1/article'],
                     'prefix' => 'api',
                     'tokens' => [
                         '{id}' => '<id:\\w+>'
@@ -46,7 +46,7 @@ return [
                 ],
                 [
                     'class' => \yii\rest\UrlRule::class,
-                    'controller' => ['v1/files'],
+                    'controller' => ['v1/category'],
                     'prefix' => 'api',
                     'tokens' => [
                         '{id}' => '<id:\\w+>'
@@ -61,19 +61,15 @@ return [
                 'multipart/form-data' => 'yii\web\MultipartFormDataParser'
             ]
         ],
-            /*
-        'response' => [
-            // ...
-            'formatters' => [
-                \yii\web\Response::FORMAT_JSON => [
-                    'class' => 'yii\web\JsonResponseFormatter',
-                    'prettyPrint' => YII_DEBUG, // используем "pretty" в режиме отладки
-                    'encodeOptions' => JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE,
-                    // ...
-                ],
-            ],
-        ],
-        */
+//        'response' => [
+//            'formatters' => [
+//                \yii\web\Response::FORMAT_JSON => [
+//                    'class' => 'yii\web\JsonResponseFormatter',
+//                    //'prettyPrint' => YII_DEBUG, // используем "pretty" в режиме отладки
+//                    'encodeOptions' => JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE,
+//                ],
+//            ],
+//        ],
         'db' => $db,
     ],
     'params' => $params,
