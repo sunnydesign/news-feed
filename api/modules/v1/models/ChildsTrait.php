@@ -6,6 +6,11 @@ namespace api\modules\v1\models;
 
 trait ChildsTrait
 {
+    /**
+     * @param array $params
+     * @param string $parent
+     * @return array
+     */
     public function getChild($params, $parent) {
         return (new \yii\db\Query())
             ->select([$params['key']])
@@ -14,6 +19,12 @@ trait ChildsTrait
             ->all();
     }
 
+    /**
+     * @param array $params
+     * @param string $parent
+     * @param array|null $storage
+     * @return array
+     */
     public function getChilds($params, $parent, &$storage = []) {
         $storage[] = $parent;
         foreach ($this->getChild($params, $parent) as $child) {
@@ -21,20 +32,4 @@ trait ChildsTrait
         }
         return $storage;
     }
-
-//    public function getChild($table, $key, $refKey, $parent) {
-//        return (new \yii\db\Query())
-//            ->select([$key])
-//            ->from($table)
-//            ->where([$refKey => $parent])
-//            ->all();
-//    }
-//
-//    public function getChilds($table, $key, $refKey, $parent, &$storage = []) {
-//        $storage[] = $parent;
-//        foreach ($this->getChild($table, $key, $refKey, $parent) as $child) {
-//            $this->getChilds($table, $key, $refKey, $child[$key], $storage);
-//        }
-//        return $storage;
-//    }
 }

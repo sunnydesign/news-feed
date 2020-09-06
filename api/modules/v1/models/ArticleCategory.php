@@ -12,7 +12,7 @@ class ArticleCategory extends ActiveRecord
 	 */
 	public static function tableName()
 	{
-		return '{{%articleCategories}}';
+		return '{{%article_categories}}';
 	}
 
     /**

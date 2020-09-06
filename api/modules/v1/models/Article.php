@@ -51,7 +51,7 @@ class Article extends ActiveRecord implements Linkable
     public function getCategories()
     {
         return $this->hasMany(Category::className(), ['id' => 'category_id'])
-            ->viaTable('{{%articleCategories}}', ['article_id' => 'id']);
+            ->viaTable('{{%article_categories}}', ['article_id' => 'id']);
     }
 
     public function behaviors()

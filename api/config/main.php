@@ -4,10 +4,15 @@ $db = require __DIR__ . '/db.php';
 $params = require __DIR__ . '/params.php';
 
 return [
-    'id' => 'file-system-api',
+    'id' => 'news-feed',
     'basePath' => dirname(__DIR__),    
     'bootstrap' => ['log'],
     'modules' => [
+        'frontend' => [
+            'basePath' => '@app/modules/frontend',
+            'class' => 'api\modules\frontend\Module',
+            'layout' => '@app/modules/frontend/views/layouts/main'
+        ],
         'v1' => [
             'basePath' => '@app/modules/v1',
             'class' => 'api\modules\v1\Module'
@@ -15,6 +20,7 @@ return [
     ],
 	'aliases' => [
         '@api' => dirname(dirname(__DIR__)) . '/api',
+        '@frontend' => dirname(dirname(__DIR__)) . '/frontend',
     ],
     'components' => [
         'user' => [
@@ -30,12 +36,20 @@ return [
                 ],
             ],
         ],
+        /*
+        'cache' => [
+            'class' => 'yii\caching\FileCache',
+        ],
+        */
         'urlManager' => [
             'enablePrettyUrl' => true,
             'enableStrictParsing' => true,
             'showScriptName' => false,
-            //http://yii-api.loc/api/v1/articles
             'rules' => [
+                // frontend
+                '/' => 'frontend/main/index',
+
+                // api
                 [
                     'class' => \yii\rest\UrlRule::class,
                     'controller' => ['v1/article'],

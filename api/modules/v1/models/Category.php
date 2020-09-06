@@ -69,7 +69,16 @@ class Category extends ActiveRecord implements Linkable
     public function getArticles()
     {
         return $this->hasMany(Article::className(), ['id' => 'article_id'])
-            ->viaTable('{{%articleCategories}}', ['category_id' => 'id']);
+            ->viaTable('{{%article_categories}}', ['category_id' => 'id']);
+    }
+
+    /**
+     * @inheritdoc
+     * @return CategoryQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new CategoryQuery(get_called_class());
     }
 
     public function behaviors()
