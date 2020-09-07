@@ -1,6 +1,6 @@
 <?php
 
-$db = require __DIR__ . '/../api/config/db.php';
+$db = require __DIR__ . '/../app/config/db.php';
 
 return [
     'id' => 'file-system-api',

@@ -31,3 +31,10 @@ tests/_support/_generated
 
 #vagrant folder
 /.vagrant
+
+# database
+/database
+
+# runtime
+/runtime/cache/*
+/runtime/logs/*

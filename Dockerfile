@@ -16,7 +16,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
         htop \
     && rm /etc/nginx/sites-enabled/default
 
-COPY ./ /var/www/api.xsolla.com/
+COPY ./ /var/www/news-feed/
 COPY ./cnf/etc/ /etc/
 COPY ./cnf/usr/local/bin/run-php-fpm.sh /usr/local/bin/
 COPY ./cnf/root/.config/mc/ /root/.config/mc/
@@ -25,8 +25,8 @@ COPY ./cnf/root/.config/mc/ /root/.config/mc/
 RUN echo 'include=/etc/php/7.4/fpm/pool.d/*.env' >> /etc/php/7.4/fpm/php-fpm.conf \
   && chmod +x /usr/local/bin/run-php-fpm.sh
 
-RUN chown -R www-data:www-data /var/www/api.xsolla.com \
-  && cd /var/www/api.xsolla.com \
+RUN chown -R www-data:www-data /var/www/news-feed \
+  && cd /var/www/news-feed \
   && composer install
 
 ENTRYPOINT ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/supervisord.conf"]
