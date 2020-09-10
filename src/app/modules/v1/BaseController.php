@@ -5,6 +5,7 @@ namespace app\modules\v1;
 use \Yii;
 use yii\rest\ActiveController;
 use yii\web\Response;
+use \andreyv\ratelimiter\IpRateLimiter;
 
 abstract class BaseController extends ActiveController
 {
@@ -20,7 +21,17 @@ abstract class BaseController extends ActiveController
     {
         $behaviors = parent::behaviors();
         $behaviors['contentNegotiator']['formats']['text/html'] = Response::FORMAT_JSON;
-        $behaviors['rateLimiter']['enableRateLimitHeaders'] = false;
+        /*
+        $behaviors['rateLimiter'] = [
+            'class' => IpRateLimiter::class,
+            'rateLimit' => 1,
+            'timePeriod' => 600,
+            'separateRates' => true,
+            'enableRateLimitHeaders' => false,
+            'actions' => [],
+            'testMode' => false,
+        ];
+        */
         /*
         $behaviors['httpCacheIndex'] = [
             'class' => 'yii\filters\HttpCache',

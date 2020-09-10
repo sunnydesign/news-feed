@@ -56,7 +56,8 @@ return [
                     'prefix' => 'api',
                     'tokens' => [
                         '{id}' => '<id:\\w+>'
-                    ]
+                    ],
+                    'except' => ['delete', 'create', 'update']
                 ],
                 [
                     'class' => \yii\rest\UrlRule::class,
@@ -64,7 +65,8 @@ return [
                     'prefix' => 'api',
                     'tokens' => [
                         '{id}' => '<id:\\w+>'
-                    ]
+                    ],
+                    'except' => ['delete', 'create', 'update']
                 ]
             ],
         ],
