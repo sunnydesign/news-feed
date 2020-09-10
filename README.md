@@ -4,7 +4,7 @@
 3. DB caching
 4. verbs
 5. Errors
-6. Composer in docker
+6. +Composer in docker
 7. Rate limit
 8. Swagger
-9. https
+9. +https

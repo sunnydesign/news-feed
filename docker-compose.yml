@@ -9,6 +9,7 @@ services:
       - db
     ports:
       - 9080:80
+      - 9443:443
     #volumes:
     #  - ./src/:/var/www/news-feed/
 
