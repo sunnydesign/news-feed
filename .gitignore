@@ -20,3 +20,6 @@ composer.phar
 
 # db
 /database
+
+# db
+/cnf/etc/nginx/ssl
