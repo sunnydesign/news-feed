@@ -1,9 +1,9 @@
 FROM ubuntu
-LABEL MAINTAINER=a@thekilo.org
+LABEL MAINTAINER=a@thekilo.ru
 
 ENV TZ=Asia/Yekaterinburg
-
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
+RUN DEBIAN_FRONTEND="noninteractive" \
+    && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
     && apt-get -yqq update && apt-get -yqq upgrade && apt-get -yqq install \
         apt-utils \
         nginx \
@@ -17,7 +17,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
         htop \
     && rm /etc/nginx/sites-enabled/default
 
-COPY ./ /var/www/news-feed/
+COPY ./src/ /var/www/news-feed/
 COPY ./cnf/etc/ /etc/
 COPY ./cnf/usr/local/bin/run-php-fpm.sh /usr/local/bin/
 COPY ./cnf/root/.config/mc/ /root/.config/mc/
