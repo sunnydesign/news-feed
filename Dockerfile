@@ -12,6 +12,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
         php-mbstring \
         supervisor jq \
         mc \
+        curl \
         composer \
         htop \
     && rm /etc/nginx/sites-enabled/default
@@ -21,12 +22,12 @@ COPY ./cnf/etc/ /etc/
 COPY ./cnf/usr/local/bin/run-php-fpm.sh /usr/local/bin/
 COPY ./cnf/root/.config/mc/ /root/.config/mc/
 
-# Allow to include custom php-fpm config, e.g. to set environment variables
-RUN echo 'include=/etc/php/7.4/fpm/pool.d/*.env' >> /etc/php/7.4/fpm/php-fpm.conf \
-  && chmod +x /usr/local/bin/run-php-fpm.sh
-
 RUN chown -R www-data:www-data /var/www/news-feed \
   && cd /var/www/news-feed \
   && composer install
+
+# Allow to include custom php-fpm config, e.g. to set environment variables
+RUN echo 'include=/etc/php/7.4/fpm/pool.d/*.env' >> /etc/php/7.4/fpm/php-fpm.conf \
+  && chmod +x /usr/local/bin/run-php-fpm.sh
 
 ENTRYPOINT ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/supervisord.conf"]

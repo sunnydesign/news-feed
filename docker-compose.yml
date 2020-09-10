@@ -9,8 +9,8 @@ services:
       - db
     ports:
       - 9080:80
-    volumes:
-      - ./:/var/www/news-feed/
+#    volumes:
+#      - ./:/var/www/news-feed/
 
   db:
     image: mysql:5.5
