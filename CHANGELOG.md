@@ -8,3 +8,4 @@
 7. ? Rate limit
 8. Swagger
 9. + https
+10. Check pagination
