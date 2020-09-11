@@ -8,7 +8,29 @@ use yii\data\ActiveDataProvider;
  */
 class CategorySearch extends Category
 {
+    use CheckParamsTrait;
+    use CacheTrait;
+
+    /**
+     * @var array
+     */
+    public $params;
+
+    /**
+     * @var string
+     */
     public $parent;
+
+    /**
+     * @param array $params
+     * @return CategorySearch $this
+     */
+    public function setParams($params)
+    {
+        $this->params = $params;
+
+        return $this;
+    }
 
     /**
      * @inheritdoc
@@ -20,17 +42,22 @@ class CategorySearch extends Category
         ];
     }
 
-    public function search($params)
+    /**
+     * @return ActiveDataProvider
+     * @throws \Throwable
+     */
+    public function search()
     {
+        $this->checkParams();
+
         $query = parent::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query
         ]);
 
-        if (!($this->load($params, '') && $this->validate())) {
-            // todo: error wrong params
-            return $dataProvider;
+        if (!($this->load($this->params, '') && $this->validate())) {
+            return $this->checkCache($dataProvider);
         }
 
         $query->andFilterWhere(['parent_id' => $this->parent]);

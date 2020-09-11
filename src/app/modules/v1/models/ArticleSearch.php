@@ -9,8 +9,29 @@ use yii\data\ActiveDataProvider;
 class ArticleSearch extends Article
 {
     use ChildsTrait;
+    use CheckParamsTrait;
+    use CacheTrait;
 
+    /**
+     * @var array
+     */
+    public $params;
+
+    /**
+     * @var string
+     */
     public $category;
+
+    /**
+     * @param array $params
+     * @return ArticleSearch $this
+     */
+    public function setParams($params)
+    {
+        $this->params = $params;
+
+        return $this;
+    }
 
     /**
      * @inheritdoc
@@ -22,8 +43,14 @@ class ArticleSearch extends Article
         ];
     }
 
-    public function search($params)
+    /**
+     * @return ActiveDataProvider
+     * @throws \Throwable
+     */
+    public function search()
     {
+        $this->checkParams();
+
         $query = parent::find()
             ->joinWith(['categories']);
 
@@ -31,9 +58,8 @@ class ArticleSearch extends Article
             'query' => $query
         ]);
 
-        if (!($this->load($params, '') && $this->validate())) {
-            // todo: error wrong params
-            return $dataProvider;
+        if (!($this->load($this->params, '') && $this->validate())) {
+            return $this->checkCache($dataProvider);
         }
 
         $query->andFilterWhere(['categories.id' => $this->getChilds(

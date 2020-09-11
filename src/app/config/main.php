@@ -1,7 +1,6 @@
 <?php
 
 $db = require __DIR__ . '/db.php';
-$params = require __DIR__ . '/params.php';
 
 return [
     'id' => 'news-feed',
@@ -36,11 +35,9 @@ return [
                 ],
             ],
         ],
-        /*
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
-        */
         'urlManager' => [
             'enablePrettyUrl' => true,
             'enableStrictParsing' => true,
@@ -87,8 +84,7 @@ return [
 //            ],
 //        ],
         'db' => $db,
-    ],
-    'params' => $params,
+    ]
 ];
 
 

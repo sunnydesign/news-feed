@@ -36,8 +36,8 @@ class Category extends ActiveRecord implements Linkable
             'id',
             'title',
             'parent_id',
-            'created_at',
             'childs',
+            //'created_at',
         ];
     }
 
