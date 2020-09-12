@@ -36,7 +36,7 @@ class Article extends ActiveRecord implements Linkable
             'id',
             'title',
             'content',
-            'categories',
+            'categories'
         ];
     }
 

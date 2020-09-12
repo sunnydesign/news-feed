@@ -14,6 +14,10 @@ trait CacheTrait
      */
     public function checkCache($dataProvider)
     {
+        if(YII_ENV === 'dev') {
+            return $dataProvider;
+        }
+
         $dependency = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM ' . parent::tableName()]);
         Yii::$app->db->cache(
             function () use ($dataProvider)

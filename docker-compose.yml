@@ -10,8 +10,8 @@ services:
     ports:
       - 9080:80
       - 9443:443
-#    volumes:
-#      - ./src/:/var/www/news-feed/
+    volumes:
+      - ./src/:/var/www/news-feed/
 
   db:
     image: mysql:5.5

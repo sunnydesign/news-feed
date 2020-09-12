@@ -21,26 +21,28 @@ abstract class BaseController extends ActiveController
         $behaviors = parent::behaviors();
         $behaviors['contentNegotiator']['formats']['text/html'] = Response::FORMAT_JSON;
 
-        $behaviors['httpCacheIndex'] = [
-            'class' => 'yii\filters\HttpCache',
-            'only' => ['index'],
-            'lastModified' => function ($action, $params) {
-                $time = (new \yii\db\Query())
-                    ->from((new $this->modelClass)->tableName())
-                    ->max('updated_at');
-                return strtotime($time);
-            },
-        ];
+        if(YII_ENV !== 'dev') {
+            $behaviors['httpCacheIndex'] = [
+                'class' => 'yii\filters\HttpCache',
+                'only' => ['index'],
+                'lastModified' => function ($action, $params) {
+                    $time = (new \yii\db\Query())
+                        ->from((new $this->modelClass)->tableName())
+                        ->max('updated_at');
+                    return strtotime($time);
+                },
+            ];
 
-        $behaviors['httpCacheView'] = [
-            'class' => 'yii\filters\HttpCache',
-            'only' => ['view'],
-            'lastModified' => function ($action, $params) {
-                $id = Yii::$app->request->get('id');
-                $time = $this->modelClass::findOne($id)->updated_at;
-                return strtotime($time);
-            },
-        ];
+            $behaviors['httpCacheView'] = [
+                'class' => 'yii\filters\HttpCache',
+                'only' => ['view'],
+                'lastModified' => function ($action, $params) {
+                    $id = Yii::$app->request->get('id');
+                    $time = $this->modelClass::findOne($id)->updated_at;
+                    return strtotime($time);
+                },
+            ];
+        }
 
         return $behaviors;
     }

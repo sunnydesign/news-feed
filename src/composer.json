@@ -15,8 +15,7 @@
     "minimum-stability": "stable",
     "require": {
         "php": ">=7.4.0",
-        "yiisoft/yii2": "~2.0.14",
-        "kop/yii2-scroll-pager": "dev-master"
+        "yiisoft/yii2": "~2.0.14"
     },
     "config": {
         "process-timeout": 1800,

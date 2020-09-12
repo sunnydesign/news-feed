@@ -39,15 +39,13 @@ class Category extends ActiveRecord implements Linkable
             'id',
             'title',
             'parent_id',
-            'childs',
+            'childCategories'
         ];
     }
 
     public function extraFields()
     {
-        // todo:wtf?
         return [
-            //'parent',
             'articles'
         ];
     }
@@ -59,14 +57,13 @@ class Category extends ActiveRecord implements Linkable
         ];
     }
 
-    public function getChilds()
+    public function getChildCategories()
     {
         return $this->hasMany(Category::className(), ['parent_id' => 'id']);
     }
 
-    public function getParent()
+    public function getParentCategory()
     {
-        // todo:wtf?
         return $this->hasOne(Category::className(), ['id' => 'parent_id']);
     }
 
@@ -90,12 +87,12 @@ class Category extends ActiveRecord implements Linkable
     {
         return [
             [
-                'class'      => TimestampBehavior::className(),
+                'class' => TimestampBehavior::className(),
                 'attributes' => [
                     ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
                     ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
                 ],
-                'value'      => new Expression('NOW()'),
+                'value' => new Expression('NOW()'),
             ],
         ];
     }
