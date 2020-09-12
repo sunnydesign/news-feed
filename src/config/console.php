@@ -1,9 +1,9 @@
 <?php
 
-$db = require __DIR__ . '/../app/config/db.php';
+$db = require __DIR__ . '/../config/db.php';
 
 return [
-    'id' => 'file-system-api',
+    'id' => 'news-feed-api',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'controllerNamespace' => 'app\commands',

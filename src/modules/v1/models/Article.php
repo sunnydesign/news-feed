@@ -25,7 +25,7 @@ class Article extends ActiveRecord implements Linkable
         return [
             [['title', 'content'], 'required'],
             [['title'], 'string', 'length' => 255],
-            [['parent_id'], 'integer'],
+            //[['parent_id'], 'integer'],
             [['created_at', 'updated_at'], 'date']
         ];
     }

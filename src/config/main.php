@@ -4,13 +4,13 @@ $db = require __DIR__ . '/db.php';
 
 return [
     'id' => 'news-feed',
-    'basePath' => dirname(__DIR__),    
+    'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'modules' => [
         'frontend' => [
             'basePath' => '@app/modules/frontend',
             'class' => 'app\modules\frontend\Module',
-            'layout' => '@app/modules/frontend/views/layouts/main'
+            'layout' => '@app/modules/frontend/views/layouts/main',
         ],
         'v1' => [
             'basePath' => '@app/modules/v1',
