@@ -1,5 +1,6 @@
 <?php
 namespace app\modules\v1\models;
+
 use yii\helpers\Url;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
@@ -12,6 +13,8 @@ use yii\web\Linkable;
  */
 class Category extends ActiveRecord implements Linkable
 {
+    use ChildsTrait;
+
 	/**
 	 * @inheritdoc
 	 */
@@ -37,14 +40,14 @@ class Category extends ActiveRecord implements Linkable
             'title',
             'parent_id',
             'childs',
-            //'created_at',
         ];
     }
 
     public function extraFields()
     {
+        // todo:wtf?
         return [
-            'parent',
+            //'parent',
             'articles'
         ];
     }
@@ -63,13 +66,24 @@ class Category extends ActiveRecord implements Linkable
 
     public function getParent()
     {
+        // todo:wtf?
         return $this->hasOne(Category::className(), ['id' => 'parent_id']);
     }
 
     public function getArticles()
     {
-        return $this->hasMany(Article::className(), ['id' => 'article_id'])
-            ->viaTable('{{%article_categories}}', ['category_id' => 'id']);
+        $query = Article::find()
+            ->joinWith(['categories'])
+            ->andFilterWhere(['categories.id' => $this->findChildIds(
+            [
+                'table' => '{{%categories}}',
+                'key' => 'id',
+                'refKey' => 'parent_id'
+            ],
+            $this->id
+        )]);
+
+        return $query->all();
     }
 
     public function behaviors()

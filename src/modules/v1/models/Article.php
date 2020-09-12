@@ -1,5 +1,6 @@
 <?php
 namespace app\modules\v1\models;
+
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\db\Expression;
@@ -25,7 +26,6 @@ class Article extends ActiveRecord implements Linkable
         return [
             [['title', 'content'], 'required'],
             [['title'], 'string', 'length' => 255],
-            //[['parent_id'], 'integer'],
             [['created_at', 'updated_at'], 'date']
         ];
     }
@@ -37,7 +37,6 @@ class Article extends ActiveRecord implements Linkable
             'title',
             'content',
             'categories',
-            //'created_at'
         ];
     }
 

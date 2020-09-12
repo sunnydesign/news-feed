@@ -1,15 +1,16 @@
 <?php
 
-
 namespace app\modules\v1\models;
 
 use yii\web\BadRequestHttpException;
 
 trait CheckParamsTrait
 {
-    public function exceptParams()
-    {
-        return ['page', 'fields', 'expand'];
+    /**
+     * @return array
+     */
+    public function getProtectedParams() {
+        return defined(self::class . '::PROTECTED_PARAMS') ? self::PROTECTED_PARAMS : [];
     }
 
     /**
@@ -24,7 +25,7 @@ trait CheckParamsTrait
             }
         }
         foreach ($this->params as $key => $param) {
-            if(!in_array($key, $rulesFields) && !in_array($key, $this->exceptParams())) {
+            if(!in_array($key, $rulesFields) && !in_array($key, $this->getProtectedParams())) {
                 throw new BadRequestHttpException('Wrong params');
             }
         }

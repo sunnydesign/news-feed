@@ -11,6 +11,8 @@ class CategorySearch extends Category
     use CheckParamsTrait;
     use CacheTrait;
 
+    const PROTECTED_PARAMS = ['page', 'fields', 'expand'];
+
     /**
      * @var array
      */

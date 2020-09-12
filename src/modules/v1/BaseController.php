@@ -1,8 +1,8 @@
 <?php
-
 namespace app\modules\v1;
 
 use \Yii;
+use yii\data\ActiveDataProvider;
 use yii\rest\ActiveController;
 use yii\web\Response;
 
@@ -21,7 +21,6 @@ abstract class BaseController extends ActiveController
         $behaviors = parent::behaviors();
         $behaviors['contentNegotiator']['formats']['text/html'] = Response::FORMAT_JSON;
 
-        /*
         $behaviors['httpCacheIndex'] = [
             'class' => 'yii\filters\HttpCache',
             'only' => ['index'],
@@ -37,12 +36,12 @@ abstract class BaseController extends ActiveController
             'class' => 'yii\filters\HttpCache',
             'only' => ['view'],
             'lastModified' => function ($action, $params) {
-                $id = Yii::$app->request->get('id'); // todo: check security
+                $id = Yii::$app->request->get('id');
                 $time = $this->modelClass::findOne($id)->updated_at;
                 return strtotime($time);
             },
         ];
-        */
+
         return $behaviors;
     }
 
@@ -53,9 +52,13 @@ abstract class BaseController extends ActiveController
     {
         $actions = parent::actions();
         $actions['index']['prepareDataProvider'] = [$this, 'prepareDataProvider'];
+
         return $actions;
     }
 
+    /**
+     * @return ActiveDataProvider
+     */
     public function prepareDataProvider()
     {
         return (new $this->modelSearchClass())->setParams(Yii::$app->request->queryParams)->search();

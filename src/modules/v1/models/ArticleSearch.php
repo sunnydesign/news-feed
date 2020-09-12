@@ -12,6 +12,8 @@ class ArticleSearch extends Article
     use CheckParamsTrait;
     use CacheTrait;
 
+    const PROTECTED_PARAMS = ['page', 'fields', 'expand'];
+
     /**
      * @var array
      */
@@ -62,7 +64,7 @@ class ArticleSearch extends Article
             return $this->checkCache($dataProvider);
         }
 
-        $query->andFilterWhere(['categories.id' => $this->getChilds(
+        $query->andFilterWhere(['categories.id' => $this->findChildIds(
             [
                 'table' => '{{%categories}}',
                 'key' => 'id',

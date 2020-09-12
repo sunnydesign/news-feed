@@ -1,8 +1,7 @@
 <?php
-
-
 namespace app\modules\v1\models;
 
+use \yii\db\Query;
 
 trait ChildsTrait
 {
@@ -12,7 +11,7 @@ trait ChildsTrait
      * @return array
      */
     public function getChild($params, $parent) {
-        return (new \yii\db\Query())
+        return (new Query())
             ->select([$params['key']])
             ->from($params['table'])
             ->where([$params['refKey'] => $parent])
@@ -25,11 +24,12 @@ trait ChildsTrait
      * @param array|null $storage
      * @return array
      */
-    public function getChilds($params, $parent, &$storage = []) {
+    public function findChildIds($params, $parent, &$storage = []) {
         $storage[] = $parent;
         foreach ($this->getChild($params, $parent) as $child) {
-            $this->getChilds($params, $child[$params['key']], $storage);
+            $this->findChildIds($params, $child[$params['key']], $storage);
         }
+
         return $storage;
     }
 }
