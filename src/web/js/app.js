@@ -33,6 +33,7 @@ class Articles extends React.Component {
         const url = this.state.items.length ? this.state.links.next.href : '/api/v1/articles?category=1';
 
         this.setState({scroll: false})
+        axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*'
         axios
             .get(url)
             .then(res => {
