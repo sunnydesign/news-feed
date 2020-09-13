@@ -31,15 +31,9 @@ class Articles extends React.Component {
     }
     getData() {
         const url = this.state.items.length ? this.state.links.next.href : '/api/v1/articles?category=1'
-        const params = {
-            headers: {
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'GET',
-            }
-        }
         this.setState({scroll: false})
         axios
-            .get(url, params)
+            .get(url)
             .then(res => {
                 this.setState({
                     items: this.state.items.concat(res.data.items),
