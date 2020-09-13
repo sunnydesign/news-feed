@@ -17,7 +17,7 @@ class ArticleCategory extends ActiveRecord
 	}
 
     /**
-     * Define rules for validation
+     * @inheritdoc
      */
     public function rules()
     {

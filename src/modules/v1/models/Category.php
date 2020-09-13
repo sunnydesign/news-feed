@@ -23,6 +23,9 @@ class Category extends ActiveRecord implements Linkable
         return '{{%categories}}';
     }
 
+    /**
+     * @inheritdoc
+     */
     public function rules()
     {
         return [
@@ -33,6 +36,9 @@ class Category extends ActiveRecord implements Linkable
         ];
     }
 
+    /**
+     * @inheritdoc
+     */
     public function fields()
     {
         return [
@@ -43,6 +49,9 @@ class Category extends ActiveRecord implements Linkable
         ];
     }
 
+    /**
+     * @inheritdoc
+     */
     public function extraFields()
     {
         return [
@@ -50,6 +59,9 @@ class Category extends ActiveRecord implements Linkable
         ];
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getLinks()
     {
         return [
@@ -57,16 +69,17 @@ class Category extends ActiveRecord implements Linkable
         ];
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getChildCategories()
     {
         return $this->hasMany(Category::className(), ['parent_id' => 'id']);
     }
 
-    public function getParentCategory()
-    {
-        return $this->hasOne(Category::className(), ['id' => 'parent_id']);
-    }
-
+    /**
+     * @return array|ActiveRecord[]
+     */
     public function getArticles()
     {
         $query = Article::find()
@@ -83,6 +96,9 @@ class Category extends ActiveRecord implements Linkable
         return $query->all();
     }
 
+    /**
+     * @inheritdoc
+     */
     public function behaviors()
     {
         return [

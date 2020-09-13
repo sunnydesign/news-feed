@@ -21,6 +21,9 @@ class Article extends ActiveRecord implements Linkable
 		return '{{%articles}}';
 	}
 
+    /**
+     * @inheritdoc
+     */
     public function rules()
     {
         return [
@@ -30,6 +33,9 @@ class Article extends ActiveRecord implements Linkable
         ];
     }
 
+    /**
+     * @inheritdoc
+     */
     public function fields()
     {
         return [
@@ -40,6 +46,9 @@ class Article extends ActiveRecord implements Linkable
         ];
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getLinks()
     {
         return [
@@ -47,12 +56,19 @@ class Article extends ActiveRecord implements Linkable
         ];
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     * @throws \yii\base\InvalidConfigException
+     */
     public function getCategories()
     {
         return $this->hasMany(Category::className(), ['id' => 'category_id'])
             ->viaTable('{{%article_categories}}', ['article_id' => 'id']);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function behaviors()
     {
         return [

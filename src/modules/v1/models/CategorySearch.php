@@ -21,7 +21,7 @@ class CategorySearch extends Category
     /**
      * @var string
      */
-    public $parent;
+    public $parentCategory;
 
     /**
      * @param array $params
@@ -40,7 +40,7 @@ class CategorySearch extends Category
     public function rules()
     {
         return [
-            [['parent'], 'integer'],
+            [['parentCategory'], 'integer'],
         ];
     }
 
@@ -62,7 +62,7 @@ class CategorySearch extends Category
             return $this->checkCache($dataProvider);
         }
 
-        $query->andFilterWhere(['parent_id' => $this->parent]);
+        $query->andFilterWhere(['parent_id' => $this->parentCategory]);
 
         return $dataProvider;
     }
