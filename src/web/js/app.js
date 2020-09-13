@@ -34,7 +34,7 @@ class Articles extends React.Component {
         const params = {
             headers: {
                 'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'GET, OPTIONS',
+                'Access-Control-Allow-Methods': 'GET',
             }
         }
         this.setState({scroll: false})
