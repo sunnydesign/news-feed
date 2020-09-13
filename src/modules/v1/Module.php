@@ -15,7 +15,10 @@ class Module extends \yii\base\Module
         return [
             'corsFilter' => [
                 'class' => \yii\filters\Cors::className(),
-            ],
+                'cors' => [
+                    'Origin' => ['*']
+                ]
+            ]
         ];
     }
 }
