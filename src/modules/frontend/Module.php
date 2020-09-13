@@ -10,4 +10,13 @@ class Module extends \yii\base\Module
     {
         parent::init();
     }
+
+    public function behaviors()
+    {
+        return [
+            'corsFilter' => [
+                'class' => \yii\filters\Cors::className(),
+            ],
+        ];
+    }
 }
