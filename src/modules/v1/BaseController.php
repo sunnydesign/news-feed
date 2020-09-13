@@ -25,6 +25,8 @@ abstract class BaseController extends ActiveController
             'cors' => [
                 // restrict access to
                 'Origin' => ['*'],
+                'Access-Control-Allow-Origin' => ['*'],
+                'Access-Control-Request-Headers' => ['*'],
                 // Allow only POST and PUT methods
                 'Access-Control-Request-Method' => ['GET', 'HEAD', 'OPTIONS'],
                 // Allow only headers 'X-Wsse'
