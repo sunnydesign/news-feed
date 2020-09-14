@@ -38,7 +38,7 @@ abstract class BaseController extends ActiveController
                 'only' => ['view'],
                 'lastModified' => function ($action, $params) {
                     $id = Yii::$app->request->get('id');
-                    $time = $this->modelClass::findOne($id)->updated_at;
+                    $time = $this->modelClass::findOne($id)->updated_at ?? null;
                     return strtotime($time);
                 },
             ];

@@ -19,9 +19,11 @@ paths:
       - categories
       summary: Получить список категорий
       description: Возвращает список категорий с пагинацией ограниченный 20 записями.
-        Содержит вложенные категории. Возможно расширить используя extended параметры.
+        Содержит дочерние категории с условно бесконечной вложенностью. Возможно отфильтровать
+        по родительской категории используя параметр `parentCategory`. Возможно расширить
+        ответ используя параметр `expand`.
       parameters:
-      - name: parent
+      - name: parentCategory
         in: query
         description: Родительская категория
         required: false
@@ -29,23 +31,32 @@ paths:
         explode: true
         schema:
           type: integer
+      - name: expand
+        in: query
+        description: Дополнительные данные
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - articles
       responses:
         "200":
-          description: successful operation
+          description: Successful operation
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Category'
+                $ref: '#/components/schemas/inline_response_200'
         "400":
-          description: Invalid status value
+          description: Wrong params
   /categories/{category_id}:
     get:
       tags:
       - categories
       summary: Получить категорию по ID
-      description: Возвращает категорию по ID.
+      description: Возвращает категорию по ID. Возможно расширить ответ используя
+        параметр `expand`.
       operationId: getPetById
       parameters:
       - name: category_id
@@ -57,29 +68,38 @@ paths:
         schema:
           type: integer
           format: int32
+      - name: expand
+        in: query
+        description: Дополнительные данные
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - articles
       responses:
         "200":
-          description: successful operation
+          description: Successful operation
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Category'
-        "400":
-          description: Invalid ID supplied
         "404":
-          description: Category not found
+          description: Page not found
   /articles:
     get:
       tags:
       - articles
       summary: Получить список статей
       description: Возвращает список статей с пагинацией ограниченный 20 записями.
-        Содержит в себе объекты категорий к которым принадлежит. Возможно расширить
-        используя extended параметры.
+        Содержит в себе объекты категорий к которым принадлежит. Возможно отфильтровать
+        по принадлежности к категории либо её потомкам  используя параметр `category`.
       parameters:
       - name: category
         in: query
-        description: Фильтрация по ID категории
+        description: Фильтрация по ID категории. Результат включает в себя так же
+          статьи принадлежащие потомкам заданной категории.
         required: false
         style: form
         explode: true
@@ -88,13 +108,13 @@ paths:
           format: int32
       responses:
         "200":
-          description: successful operation
+          description: Successful operation
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Article'
+                $ref: '#/components/schemas/inline_response_200_1'
+        "400":
+          description: Wrong params
   /articles/{article_id}:
     get:
       tags:
@@ -113,15 +133,13 @@ paths:
           format: int32
       responses:
         "200":
-          description: successful operation
+          description: Successful operation
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Article'
-        "400":
-          description: Invalid ID supplied
         "404":
-          description: Article not found
+          description: Page not found
 components:
   schemas:
     Article:
@@ -148,6 +166,56 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Category'
+        _links:
+          $ref: '#/components/schemas/LinksArticle'
+    Articles:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          example: 2
+        title:
+          type: string
+          description: Заголовок статьи
+          example: 'Одни закрылись, другие переехали: какие заведения Перми не найти
+            на привычных местах из-за пандемии'
+        content:
+          type: string
+          description: Тело статьи
+          example: 'Кафе, бары и рестораны Перми вернулись к работе в обычном режиме
+            только в середине августа. До этого они прошли путь от полного карантина,
+            объявленного в конце марта, до возможности открыться в формате летника
+            в начале июля. Восстановиться смогли не все: часть любимых пермяками мест
+            закрылась, а некоторым пришлось поменять адрес. Рассказываем о таких заведениях.'
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/Category'
+        _links:
+          $ref: '#/components/schemas/LinksArticle'
+    Categories:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          example: 5
+        parent_id:
+          type: integer
+          description: ID родительской категории
+          format: int32
+          example: 1
+        title:
+          type: string
+          description: Название категории
+          example: Общество
+        childCategories:
+          type: array
+          items:
+            $ref: '#/components/schemas/CategoryChild'
+        _links:
+          $ref: '#/components/schemas/LinksCategory'
     Category:
       type: object
       properties:
@@ -164,10 +232,12 @@ components:
           type: string
           description: Название категории
           example: Общество
-        childs:
+        childCategories:
           type: array
           items:
             $ref: '#/components/schemas/CategoryChild'
+        _links:
+          $ref: '#/components/schemas/LinksCategory'
     CategoryChild:
       type: object
       properties:
@@ -183,8 +253,179 @@ components:
         title:
           type: string
           description: Название категории
-          example: Общество
-        childs:
+          example: Городская жизнь
+        childCategories:
           type: array
           items:
             format: object
+        _links:
+          $ref: '#/components/schemas/LinksCategory'
+    Meta:
+      type: object
+      properties:
+        totalCount:
+          type: integer
+          example: 53
+        pageCount:
+          type: integer
+          example: 3
+        currentPage:
+          type: integer
+          example: 2
+        perPage:
+          type: integer
+          example: 20
+    LinksArticle:
+      type: object
+      properties:
+        self:
+          $ref: '#/components/schemas/LinksArticle_self'
+    LinksArticles:
+      type: object
+      properties:
+        self:
+          $ref: '#/components/schemas/LinksArticles_self'
+        next:
+          $ref: '#/components/schemas/LinksArticles_next'
+        last:
+          $ref: '#/components/schemas/LinksArticles_last'
+        first:
+          $ref: '#/components/schemas/LinksArticles_first'
+        prev:
+          $ref: '#/components/schemas/LinksArticles_prev'
+    LinksCategory:
+      type: object
+      properties:
+        self:
+          $ref: '#/components/schemas/LinksCategory_self'
+    LinksCategories:
+      type: object
+      properties:
+        self:
+          $ref: '#/components/schemas/LinksCategories_self'
+        next:
+          $ref: '#/components/schemas/LinksCategories_next'
+        last:
+          $ref: '#/components/schemas/LinksCategories_last'
+        first:
+          $ref: '#/components/schemas/LinksCategories_first'
+        prev:
+          $ref: '#/components/schemas/LinksCategories_prev'
+    inline_response_200:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Categories'
+        _links:
+          $ref: '#/components/schemas/LinksCategories'
+        _meta:
+          $ref: '#/components/schemas/Meta'
+    inline_response_200_1:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Articles'
+        _links:
+          $ref: '#/components/schemas/LinksArticles'
+        _meta:
+          $ref: '#/components/schemas/Meta'
+    LinksArticle_self:
+      type: object
+      properties:
+        href:
+          type: object
+          description: href
+          example: https://news-feed.thekilo.org/api/v1/article/12
+      description: self
+    LinksArticles_self:
+      type: object
+      properties:
+        href:
+          type: object
+          description: href
+          example: https://news-feed.thekilo.org/api/v1/articles?page=2
+      description: self
+    LinksArticles_next:
+      type: object
+      properties:
+        href:
+          type: object
+          description: href
+          example: https://news-feed.thekilo.org/api/v1/articles?page=3
+      description: next
+    LinksArticles_last:
+      type: object
+      properties:
+        href:
+          type: object
+          description: href
+          example: https://news-feed.thekilo.org/api/v1/articles?page=3
+      description: last
+    LinksArticles_first:
+      type: object
+      properties:
+        href:
+          type: object
+          description: href
+          example: https://news-feed.thekilo.org/api/v1/articles?page=1
+      description: first
+    LinksArticles_prev:
+      type: object
+      properties:
+        href:
+          type: object
+          description: href
+          example: https://news-feed.thekilo.org/api/v1/articles?page=1
+      description: prev
+    LinksCategory_self:
+      type: object
+      properties:
+        href:
+          type: object
+          description: href
+          example: https://news-feed.thekilo.org/api/v1/category/1
+      description: self
+    LinksCategories_self:
+      type: object
+      properties:
+        href:
+          type: object
+          description: href
+          example: https://news-feed.thekilo.org/api/v1/categories?page=2
+      description: self
+    LinksCategories_next:
+      type: object
+      properties:
+        href:
+          type: object
+          description: href
+          example: https://news-feed.thekilo.org/api/v1/categories?page=3
+      description: next
+    LinksCategories_last:
+      type: object
+      properties:
+        href:
+          type: object
+          description: href
+          example: https://news-feed.thekilo.org/api/v1/categories?page=3
+      description: last
+    LinksCategories_first:
+      type: object
+      properties:
+        href:
+          type: object
+          description: href
+          example: https://news-feed.thekilo.org/api/v1/categories?page=1
+      description: first
+    LinksCategories_prev:
+      type: object
+      properties:
+        href:
+          type: object
+          description: href
+          example: https://news-feed.thekilo.org/api/v1/categories?page=1
+      description: prev
